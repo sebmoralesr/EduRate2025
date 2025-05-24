@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Home - EduRate</title>
+    <style>
+        /* Estilos específicos de index.html que ya tenías (hero, top-profesores) */
+        /* Asegúrate de que estos no entren en conflicto con los estilos globales de la barra de nav en style.css */
+
+        /* ----- Estilos para la Sección Hero ----- */
+        .hero-section {
+            background-image: url('/images/fondo.png'); /* Ruta desde public/images/fondo.png */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 90vh; 
+            min-height: 400px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative; 
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4); 
+        }
+        .hero-section .hero-content { 
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hero-section h1.main-title { /* Clase específica para el H1 del hero */
+            font-size: 3.5rem; 
+            color: #FFFFFF; 
+            font-weight: 700;
+            margin: 0 0 30px 0; 
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); 
+            animation: fadeInHeroText 1.5s ease-out;
+        }
+        .hero-login-button { 
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            background-color: #FFDD00; 
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .hero-login-button:hover {
+            background-color: #ffe749;
+            transform: translateY(-2px);
+        }
+        @keyframes fadeInHeroText {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ----- Estilos para la Sección "Nuestro Top 6" ----- */
+        .top-profesores-section {
+            padding: 50px 20px;
+            text-align: center;
+            background-color: #1B1B1B; 
+        }
+
+        .top-lista {
+            max-width: 800px; 
+            margin: 0 auto; 
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+        }
+        .top-item {
+            background-color: #ffffff;
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            padding: 20px 25px;
+            display: flex; 
+            align-items: center; 
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #333; /* Texto oscuro para items claros */
+        }
+        .top-item:hover .top-item-content h3 {
+            color: #FFDD00; 
+            transition: color 0.3s ease;
+        }
+        .TopProfesores { /* Nota: Las clases suelen empezar con minúscula por convención */
+            width: 50px; 
+            height: 50px; 
+            border-radius: 5px; 
+            margin-right: 20px; 
+            flex-shrink: 0; 
+        }
+        .top-item-content h3 {
+            font-size: 1.3rem;
+            color: #2c3e50; 
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .top-item-content p {
+            font-size: 0.95rem;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .wave-container { text-align: center; margin: 40px 0; }
+        .wave-text span {
+            display: inline-block;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFDD00;
+            animation: wave-animation 1.5s ease-in-out infinite;
+        }
+        .wave-text span:nth-child(1) { animation-delay: 0s; }
+        /* ... (resto de tus nth-child para wave-text) ... */
+        .wave-text span:nth-child(12) { animation-delay: 1.1s; } /* Asegúrate de tener hasta el último */
+        @keyframes wave-animation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Clase para ocultar elementos */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive para la sección Hero y Top (tus estilos existentes) */
+        @media (max-width: 768px) {
+            .hero-section h1.main-title { font-size: 2.5rem; }
+            /* .top-profesores-section h2 { font-size: 2rem; } Tu H2 original, ahora es H1 */
+            .top-item { padding: 15px 20px; }
+            .top-item-content h3 { font-size: 1.1rem; }
+            .top-item-content p { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="barra-superior">
+        <img src="/images/Logo.png" alt="Logo EduRate" id="logo">
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li class="auth-required hidden"><a href="/personas"><i class="fas fa-search"></i> Búsqueda</a></li>
+                <li class="auth-required hidden"><a href="/logros"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+                <li class="auth-required hidden"><a href="/amigos"><i class="fas fa-users"></i> Nosotros</a></li>
+            </ul>
+        </nav>
+        <div id="auth-controls">
+            </div>
+    </div>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="main-title">SIEMPRE MÁS CERCA DE LOS ESTUDIANTES</h1>
+                </div>
+        </section>
+
+        <section class="top-profesores-section auth-required hidden">
+            <div class="wave-container">
+                <h1 class="wave-text section-title"> <span>N</span><span>U</span><span>E</span><span>S</span><span>T</span><span>R</span><span>O</span>
+                  <span>&nbsp;</span>
+                  <span>T</span><span>O</span><span>P</span>
+                  <span>&nbsp;</span>
+                  <span>6</span>
+                </h1>
+            </div>
+            <div class="top-lista">
+                <div class="top-item">
+                    <img src="/images/Archbold.png" alt="Profesor1" class="TopProfesores">
+                    <div class="top-item-content"><h3>Jorge Archbold - Ing Mecanica</h3><p>El mejor profesor que he podido conocer, sus metodos de enseñar, los mejores."</p></div>
+                </div>
+                <div class="top-item">
+                    <img src="/images/Agustin.png" alt="Profesor Agustin" class="TopProfesores">
+                    <div class="top-item-content"><h3>Agustin Barrios - Matematica</h3><p>La mejor eleccion para calculo 3. Es muy dinamico al momento de explicar."</p></div>
+                </div>
+                <div class="top-item">
+                    <img src="/images/Jimeno.png" alt="Profesor Jimeno" class="TopProfesores">
+                    <div class="top-item-content"><h3>Miguel Jimeno - Ing Sistemas</h3><p>Excelente calidad de profesor y ser humano. Tiene muchos conociemientos de SQL.</p></div>
+                </div>
+                <div class="top-item">
+                    <img src="/images/Daladier.png" alt="Profesor Daladier" class="TopProfesores">
+                    <div class="top-item-content"><h3>Daladier Jabba - Ing Sistemas</h3><p>Es un profesor que enseña mas alla de la materia, para la vida.</p></div>
+                </div>
+                <div class="top-item">
+                    <img src="/images/Claudia.png" alt="Profesora Claudia" class="TopProfesores">
+                    <div class="top-item-content"><h3>Claudia Diaz - Administraciòn de Empresas</h3><p>La profesora fomenta las conexiones internacionales, excelente opcion.</p></div>
+                </div>
+                <div class="top-item">
+                    <img src="/images/Mark.png" alt="Profesor Mark" class="TopProfesores">
+                    <div class="top-item-content"><h3>Mark Betts - Diseño Grafico</h3><p>Sus clases son muy dinamicas, ayudan bastante.</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            // ... (la parte inicial del script con los console.log y el fetch a /auth/status se mantiene igual) ...
+
+            const heroSectionElement = document.querySelector('.hero-section');
+            const heroContent = document.querySelector('.hero-section .hero-content');
+            const authControlsDiv = document.getElementById('auth-controls');
+            const navItemsAuthRequired = document.querySelectorAll('#main-navigation .auth-required');
+            const topProfesoresSection = document.querySelector('.top-profesores-section');
+
+            // ... (verificaciones de elementos y fetch a /auth/status como en la respuesta anterior) ...
+            // ... (el bloque try/catch que llama a las funciones de renderizado) ...
+             try {
+                console.log("Verificando estado de autenticación (/auth/status)...");
+                const response = await fetch('/auth/status');
+                const data = await response.json();
+                console.log("Respuesta de /auth/status:", data);
+
+                if (!response.ok) {
+                    console.error('Error en la respuesta de /auth/status:', response.statusText, data.message || '');
+                    renderLoggedOutStateUI_Index();
+                    return;
+                }
+
+                if (data.isLoggedIn && data.usuario && data.usuario.nombreUsuario) {
+                    console.log("Usuario está LOGUEADO. Llamando a renderLoggedInStateUI_Index.");
+                    renderLoggedInStateUI_Index(data.usuario);
+                } else {
+                    console.log("Usuario NO está LOGUEADO o falta información del usuario. Llamando a renderLoggedOutStateUI_Index.");
+                    renderLoggedOutStateUI_Index();
+                }
+            } catch (error) {
+                console.error('Error crítico durante la verificación de autenticación:', error);
+                renderLoggedOutStateUI_Index();
+            }
+
+
+            // Funciones específicas para index.html
+            function renderLoggedInStateUI_Index(usuario) {
+                console.log("Ejecutando renderLoggedInStateUI_Index");
+
+                // ***** CAMBIO PRINCIPAL AQUÍ: YA NO OCULTAMOS EL HERO SECTION *****
+                if (heroSectionElement) {
+                    heroSectionElement.classList.remove('hidden'); // Asegurarse de que el hero sea visible
+                    // Y quitamos el botón de login del hero si existiera (porque ya está logueado)
+                    const existingLoginButton = heroContent ? heroContent.querySelector('.hero-login-button') : null;
+                    if (existingLoginButton) {
+                        existingLoginButton.remove();
+                    }
+                } else {
+                    console.error("heroSectionElement NO ENCONTRADO en renderLoggedInStateUI_Index.");
+                }
+                
+                if (topProfesoresSection) topProfesoresSection.classList.remove('hidden'); 
+                navItemsAuthRequired.forEach(item => item.classList.remove('hidden'));
+
+                if (authControlsDiv) {
+                    authControlsDiv.innerHTML = `
+                        <span id="auth-status-message">Bienvenido, ${usuario.nombreUsuario}!</span>
+                        <button id="logout-button-nav">Cerrar Sesión</button>
+                    `;
+                    const logoutButton = document.getElementById('logout-button-nav');
+                    if (logoutButton) {
+                        logoutButton.addEventListener('click', async () => {
+                            try {
+                                await fetch('/auth/logout');
+                                window.location.reload(); 
+                            } catch (err) {
+                                console.error('Error al cerrar sesión:', err);
+                                alert('No se pudo cerrar sesión.');
+                            }
+                        });
+                    } else {
+                        console.error("Botón de logout no encontrado en renderLoggedInStateUI_Index");
+                    }
+                } else {
+                    console.error("authControlsDiv no encontrado en renderLoggedInStateUI_Index");
+                }
+            }
+
+            function renderLoggedOutStateUI_Index() {
+                console.log("Ejecutando renderLoggedOutStateUI_Index");
+                if (heroSectionElement) {
+                    heroSectionElement.classList.remove('hidden'); // Asegurarse de que el hero sea visible
+                } else {
+                    console.error("heroSectionElement NO ENCONTRADO en renderLoggedOutStateUI_Index. El hero no se puede mostrar.");
+                }
+
+                if (topProfesoresSection) topProfesoresSection.classList.add('hidden'); 
+                navItemsAuthRequired.forEach(item => item.classList.add('hidden'));
+
+                if (heroContent) { 
+                    if (!heroContent.querySelector('.hero-login-button')) {
+                        const loginButton = document.createElement('a');
+                        loginButton.href = '/login.html';
+                        loginButton.className = 'hero-login-button';
+                        loginButton.textContent = 'Iniciar Sesión';
+                        heroContent.appendChild(loginButton);
+                    }
+                } else {
+                    console.error("heroContent NO ENCONTRADO en renderLoggedOutStateUI_Index. No se puede añadir botón de login al hero.");
+                }
+                
+                if (authControlsDiv) {
+                    authControlsDiv.innerHTML = `<a href="/registro.html" id="register-button-nav">Registrarse</a>`;
+                } else {
+                    console.error("authControlsDiv no encontrado en renderLoggedOutStateUI_Index");
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

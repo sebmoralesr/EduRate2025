@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sobre Nosotros | EduRate</title>
+  <link rel="stylesheet" href="/css/style.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #1B1B1B;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    main {
+      margin-top: 100px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card {
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h1 {
+      color: #FFDD00;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .card p {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .card a {
+      margin-top: 25px;
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #FFDD00;
+      color: black;
+      font-weight: 600;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .card a:hover {
+      transform: scale(1.05);
+    }
+
+    .grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .grid .box {
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 25px;
+      width: 280px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .grid .box h3 {
+      color: #FFDD00;
+      margin-bottom: 15px;
+    }
+
+    .grid .box p {
+      font-size: 0.95rem;
+      color: #ddd;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <div id="barra-superior">
+    <img src="/images/Logo.png" alt="Logo EduRate" id="logo">
+    <nav id="main-navigation">
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li class="auth-required hidden"><a href="/personas"><i class="fas fa-search"></i> Búsqueda</a></li>
+            <li class="auth-required hidden"><a href="/logros"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+            <li class="auth-required hidden"><a href="/amigos"><i class="fas fa-users"></i> Nosotros</a></li>
+            </ul>
+    </nav>
+    <div id="auth-controls">
+        </div>
+  </div>
+
+  <!-- Contenido -->
+  <main>
+    <div class="card">
+      <h1>Sobre Nosotros</h1>
+      <h2>EduRate</h2>
+      <p>
+        En EduRate, creemos en el poder de la información compartida para mejorar la educación.
+        Nuestro objetivo es ayudarte a tomar decisiones más informadas al elegir docentes, promoviendo
+        una comunidad educativa transparente, moderna y confiable.
+      </p>
+      <a href="#info">Saber más</a>
+    </div>
+
+    <!-- Misión, Visión, Valores -->
+    <section class="grid" id="info">
+      <div class="box">
+        <h3>Misión</h3>
+        <p>Fomentar una comunidad educativa donde la transparencia y la retroalimentación permitan a los estudiantes y docentes mejorar continuamente.</p>
+      </div>
+      <div class="box">
+        <h3>Visión</h3>
+        <p>Convertirnos en la plataforma líder en evaluación docente en Latinoamérica, impactando positivamente la calidad educativa.</p>
+      </div>
+      <div class="box">
+        <h3>Valores</h3>
+        <p>Transparencia, respeto, innovación, confiabilidad y compromiso con el aprendizaje colectivo.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const authControlsDiv = document.getElementById('auth-controls');
+        const navItemsAuthRequired = document.querySelectorAll('#main-navigation .auth-required');
+
+        if (!authControlsDiv || !navItemsAuthRequired) {
+            console.error("Error: Elementos #auth-controls o .auth-required no encontrados en el DOM de esta página.");
+            return; 
+        }
+
+        try {
+            const response = await fetch('/auth/status'); 
+            if (!response.ok) {
+                console.error('Error al verificar estado de sesión con /auth/status:', response.statusText);
+                renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+                return;
+            }
+            const data = await response.json();
+
+            if (data.isLoggedIn && data.usuario && data.usuario.nombreUsuario) { // Verificar que data.usuario.nombreUsuario exista
+                renderLoggedInStateUI(data.usuario, navItemsAuthRequired, authControlsDiv);
+            } else {
+                renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+            }
+        } catch (error) {
+            console.error('Error crítico al verificar el estado de autenticación:', error);
+            renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+        }
+    });
+
+    function renderLoggedInStateUI(usuario, navItemsAuthRequired, authControlsDiv) {
+        navItemsAuthRequired.forEach(item => item.classList.remove('hidden'));
+
+        // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+        authControlsDiv.innerHTML = `
+            <span id="auth-status-message">Bienvenido, ${usuario.nombreUsuario}!</span>
+            <button id="logout-button-nav">Cerrar Sesión</button>
+        `;
+        
+        const logoutButton = document.getElementById('logout-button-nav');
+        if(logoutButton) { 
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/auth/logout');
+                    window.location.href = '/login.html'; 
+                } catch (err) {
+                    console.error('Error al cerrar sesión:', err);
+                    alert('No se pudo cerrar sesión.');
+                }
+            });
+        } else {
+            console.error("Botón de logout no encontrado después de renderizar.");
+        }
+    }
+
+    function renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv) {
+        navItemsAuthRequired.forEach(item => item.classList.add('hidden'));
+
+        // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+        let authHTML = '<a href="/login.html" id="login-button-nav">Iniciar Sesión</a>';
+        authHTML += '<a href="/registro.html" id="register-button-nav">Registrarse</a>';
+        authControlsDiv.innerHTML = authHTML;
+    }
+  </script>
+  
+</body>
+</html>
+
+
+
+
+
+
+

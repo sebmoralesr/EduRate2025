@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Logros</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #1B1B1B;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .hero-section {
+            background-image: url('images/fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 90vh;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 1;
+            animation: fadeInHeroText 1.5s ease-out;
+        }
+
+        @keyframes fadeInHeroText {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        main {
+            padding: 0px;
+        }
+
+        h1, h2 {
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin: 40px auto;
+            padding: 20px;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+
+        .chart-text {
+            max-width: 400px;
+            color: #ffffff;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .chart-text h3 {
+            font-size: 1.5rem;
+            color: #FFDD00;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            max-width: 600px;
+            max-height: 400px;
+            width: 100%;
+            height: auto;
+            background-color: #1b1b1b;
+            border: 1px solid #FFDD00;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="barra-superior">
+        <img src="/images/Logo.png" alt="Logo EduRate" id="logo">
+        <nav id="main-navigation">
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li class="auth-required hidden"><a href="/personas"><i class="fas fa-search"></i> Búsqueda</a></li>
+                <li class="auth-required hidden"><a href="/logros"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+                <li class="auth-required hidden"><a href="/amigos"><i class="fas fa-users"></i> Nosotros</a></li>
+                </ul>
+        </nav>
+        <div id="auth-controls">
+            </div>
+    </div>
+
+    <main>
+        <section class="hero-section">
+            <h1>GRAFICOS Y ESTADISTICAS</h1>
+        </section>
+
+        <h1>Análisis general de la información de los Docentes</h1>
+
+        <div class="chart-wrapper">
+            <canvas id="barChart"></canvas>
+            <div class="chart-text">
+                <h3>Relación Puntuación Materia vs Profesor</h3>
+                <p>Esta gráfica compara el promedio de la puntuación obtenida por los estudiantes en la materia con el promedio de la calificación del profesor por parte de los alumnos.</p>
+            </div>
+        </div>
+
+        <div class="chart-wrapper">
+            <canvas id="pieChart"></canvas>
+            <div class="chart-text">
+                <h3>Frecuencia de Evaluaciones por Materia</h3>
+                <p>Representa cuántas evaluaciones se han realizado por cada materia. Permite identificar las materias con más y menos reseñas.</p>
+            </div>
+        </div>
+
+        <div class="chart-wrapper">
+            <canvas id="scatterChart"></canvas>
+            <div class="chart-text">
+                <h3>Dispersión de Profesores con Calidad &gt; 4</h3>
+                <p>Muestra la dispersión de la puntuación promedio de los profesores que han recibido una calificación superior a 4, según los estudiantes.</p>
+            </div>
+        </div>
+
+        <script>
+            async function fetchData(apiUrl) {
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error(`Error: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            }
+
+            async function renderBarChart() {
+                const data = await fetchData('/api/data');
+                if (!data) return;
+
+                new Chart(document.getElementById('barChart').getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Promedio Puntuación Materia',
+                                data: data.valuesMateria,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Promedio Puntuación Profesor',
+                                data: data.valuesProfesor,
+                                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+
+            async function renderPieChart() {
+                const data = await fetchData('/api/pie-data');
+                if (!data) return;
+
+                new Chart(document.getElementById('pieChart').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Frecuencia de Evaluaciones',
+                            data: data.values,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true }
+                });
+            }
+
+            async function renderScatterChart() {
+                const data = await fetchData('/api/scatter-data');
+                if (!data) return;
+
+                new Chart(document.getElementById('scatterChart').getContext('2d'), {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Promedio Calidad (Profesores)',
+                            data: data.scatterData.map((point, i) => ({ x: i + 1, y: point.y })),
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'Profesores (Índice)' } },
+                            y: { title: { display: true, text: 'Promedio Calidad' }, beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            async function renderCharts() {
+                await renderBarChart();
+                await renderPieChart();
+                await renderScatterChart();
+            }
+
+            renderCharts();
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                const authControlsDiv = document.getElementById('auth-controls');
+                const navItemsAuthRequired = document.querySelectorAll('#main-navigation .auth-required');
+
+                if (!authControlsDiv || !navItemsAuthRequired) {
+                    console.error("Error: Elementos #auth-controls o .auth-required no encontrados en el DOM de esta página.");
+                    return; 
+                }
+
+                try {
+                    const response = await fetch('/auth/status'); 
+                    if (!response.ok) {
+                        console.error('Error al verificar estado de sesión con /auth/status:', response.statusText);
+                        renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+                        return;
+                    }
+                    const data = await response.json();
+
+                    if (data.isLoggedIn && data.usuario && data.usuario.nombreUsuario) { // Verificar que data.usuario.nombreUsuario exista
+                        renderLoggedInStateUI(data.usuario, navItemsAuthRequired, authControlsDiv);
+                    } else {
+                        renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+                    }
+                } catch (error) {
+                    console.error('Error crítico al verificar el estado de autenticación:', error);
+                    renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+                }
+            });
+
+            function renderLoggedInStateUI(usuario, navItemsAuthRequired, authControlsDiv) {
+                navItemsAuthRequired.forEach(item => item.classList.remove('hidden'));
+
+                // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+                authControlsDiv.innerHTML = `
+                    <span id="auth-status-message">Bienvenido, ${usuario.nombreUsuario}!</span>
+                    <button id="logout-button-nav">Cerrar Sesión</button>
+                `;
+                
+                const logoutButton = document.getElementById('logout-button-nav');
+                if(logoutButton) { 
+                    logoutButton.addEventListener('click', async () => {
+                        try {
+                            await fetch('/auth/logout');
+                            window.location.href = '/login.html'; 
+                        } catch (err) {
+                            console.error('Error al cerrar sesión:', err);
+                            alert('No se pudo cerrar sesión.');
+                        }
+                    });
+                } else {
+                    console.error("Botón de logout no encontrado después de renderizar.");
+                }
+            }
+
+            function renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv) {
+                navItemsAuthRequired.forEach(item => item.classList.add('hidden'));
+
+                // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+                let authHTML = '<a href="/login.html" id="login-button-nav">Iniciar Sesión</a>';
+                authHTML += '<a href="/registro.html" id="register-button-nav">Registrarse</a>';
+                authControlsDiv.innerHTML = authHTML;
+            }
+        </script>
+    </main>
+</body>
+</html>

@@ -1,0 +1,127 @@
+main {
+    margin-left: 270px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    min-height: 100vh; /* Asegura que el contenido llene toda la altura */
+    box-sizing: border-box;
+    overflow-x: auto; /* Maneja desbordamientos horizontales */
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+    #vertical-bar {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+
+    main {
+        margin-left: 0;
+        padding: 10px;
+        width: 100%; /* Ajusta el ancho al viewport */
+    }
+
+    #docente-select, #consultar-detalles {
+        width: 90%; /* Ajusta elementos al ancho del contenedor */
+        margin: 10px auto;
+    }
+
+    table {
+        display: block; /* Habilita scroll horizontal para tablas */
+        overflow-x: auto;
+        width: 100%;
+    }
+}
+
+/* Títulos destacados */
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #004d7a;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-top: 20px;
+    color: #00799c;
+}
+
+/* Select de docentes */
+#docente-select {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 2px solid #63373e;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de consultar */
+#consultar-detalles {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: #00799c;
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#consultar-detalles:hover {
+    background-color: #ffffff;
+    color: #4886dc;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabla de detalles */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    table-layout: fixed; /* Controla el desbordamiento en celdas */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    word-wrap: break-word; /* Ajusta texto largo */
+}
+
+tbody tr:hover {
+    background-color: #e0f7fa;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Resultado */
+#resultado {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #00799c;
+    border-radius: 10px;
+    color: #004d7a;
+    background-color: #e0f7fa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docentes y Materias</title>
+  <link rel="stylesheet" href="/css/style.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+        /* General */
+    body {
+        margin: 0;
+        background-color: #1B1B1B;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    main {
+        box-sizing: border-box;
+        min-height: 100vh;
+        overflow-x: auto;
+        background-color: #1B1B1B;
+    }
+
+    /* Contenido principal */
+    .contenido-principal {
+        padding: 40px 20px;
+        color: white;
+    }
+
+    /* Hero section */
+    .hero-section {
+        background-image: url('images/fondo.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 90vh;
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-section h1 {
+        position: relative;
+        color: white;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin: 0;
+        z-index: 1;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        animation: fadeInHeroText 1.5s ease-out;
+    }
+
+    @keyframes fadeInHeroText {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Títulos generales */
+    h1, h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #ffffff;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        color: #ffffff;
+        margin-top: 20px;
+    }
+
+    /* Estilo del select y contenedor */
+    .search-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .form-select {
+        width: 100%;
+        max-width: 800px;
+        padding: 12px 45px;
+        font-size: 1rem;
+        border: 2px solid #fff;
+        border-radius: 30px;
+        background-color: #000;
+        color: #fff;
+        appearance: none;
+    }
+
+    .form-select option {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .search-container i {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+        font-size: 1.2rem;
+    }
+
+    .search-icon {
+        right: 340px;
+    }
+
+    /* Botón */
+    #consultar-detalles {
+        display: block;
+        margin: 20px auto;
+        background-color: #FFDD00;
+        color: #ffffff;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #consultar-detalles:hover {
+        background-color: #e0b800;
+    }
+
+    /* Resultado */
+    #resultado {
+        background-color: #fff7c6;
+        color: #000;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px auto;
+        max-width: 968px;
+    }
+
+    /* Tabla */
+    table {
+        width: 100%;
+        max-width: 1000px;
+        margin: 20px auto 0 auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+        word-wrap: break-word;
+        color: #000;
+    }
+
+    tbody tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Animaciones de evaluación */
+    .celebration, .moderate, .improvement {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        background-color: #fff;
+        padding: 20px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Aquí se asegura que los títulos de las animaciones sean negros */
+    .celebration h2, .moderate h2, .improvement h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #000;
+    }
+
+    .celebration p { color: #00c853; }   /* Verde */
+    .moderate p { color: #ffa000; }         /* Amarillo */
+    .improvement p { color: #d50000; }        /* Rojo */
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -40%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .form-select {
+            width: 90%;
+        }
+        .search-icon {
+            left: 20px;
+        }
+        #consultar-detalles {
+            width: 90%;
+        }
+        table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+
+</style>
+
+</head>
+<body>
+
+  <div id="barra-superior">
+    <img src="/images/Logo.png" alt="Logo EduRate" id="logo">
+    <nav id="main-navigation">
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li class="auth-required hidden"><a href="/personas"><i class="fas fa-search"></i> Búsqueda</a></li>
+            <li class="auth-required hidden"><a href="/logros"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+            <li class="auth-required hidden"><a href="/amigos"><i class="fas fa-users"></i> Nosotros</a></li>
+            </ul>
+    </nav>
+    <div id="auth-controls">
+        </div>
+  </div>
+
+  <main>
+    <section class="hero-section">
+      <h1>RESEÑA Y BÚSQUEDA DE PROFESORES</h1>
+    </section>
+
+    <section class="contenido-principal">
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <select class="form-select" id="docente-select">
+          <option value="" disabled selected>Seleccione...</option>
+        </select>
+      </div>
+
+      <button id="consultar-detalles">Consultar Detalles</button>
+
+      <h2>Resultado</h2>
+      <div id="resultado"></div>
+
+      <table id="detalles-tabla">
+        <thead>
+          <tr>
+            <th>Nota</th>
+            <th>Reseña</th>
+            <th>Año</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- Animaciones -->
+    <div class="celebration" id="celebration">
+      <h2>¡Altamente Recomendado!</h2>
+      <p></p>
+    </div>
+    <div class="moderate" id="moderate">
+      <h2>¡Buen Profesor!</h2>
+      <p></p>
+    </div>
+    <div class="improvement" id="improvement">
+      <h2>¡Puedes Mejorar!</h2>
+      <p></p>
+    </div>
+  </main>
+
+  <script>
+    async function fetchDocentes() {
+      try {
+        const response = await fetch('/docentes');
+        const data = await response.json();
+        const select = document.getElementById('docente-select');
+
+        data.forEach(docente => {
+          const option = document.createElement('option');
+          option.value = JSON.stringify(docente);
+          option.textContent = `${docente.Nombre_profesor} ${docente.Apellido_profesor} - ${docente.Materia}`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error al cargar docentes', error);
+      }
+    }
+
+    function mostrarAnimacion(tipo, mensaje) {
+      const el = document.getElementById(tipo);
+      if (el) {
+        el.querySelector('p').textContent = mensaje;
+        el.style.display = 'block';
+        setTimeout(() => {
+          el.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    document.getElementById('consultar-detalles').addEventListener('click', async () => {
+      const select = document.getElementById('docente-select');
+      const resultado = document.getElementById('resultado');
+      const tablaBody = document.querySelector('#detalles-tabla tbody');
+
+      if (!select.value) {
+        resultado.textContent = "Por favor, seleccione un docente.";
+        tablaBody.innerHTML = "";
+        return;
+      }
+
+      const { Materia, Nombre_profesor, Apellido_profesor } = JSON.parse(select.value);
+
+      try {
+        const response = await fetch(`/detalles?Materia=${encodeURIComponent(Materia)}&Nombre_profesor=${encodeURIComponent(Nombre_profesor)}&Apellido_profesor=${encodeURIComponent(Apellido_profesor)}`);
+        const data = await response.json();
+
+        if (!data.length) {
+          resultado.textContent = "No se encontraron evaluaciones.";
+          tablaBody.innerHTML = "";
+          return;
+        }
+
+        resultado.textContent = `Detalles de las evaluaciones para ${Nombre_profesor} ${Apellido_profesor} en ${Materia}:`;
+
+        tablaBody.innerHTML = data.map(detalle => {
+          const nota = parseFloat(detalle.Nota);
+          if (!isNaN(nota)) {
+            if (nota >= 4.0) mostrarAnimacion("celebration", "¡Excelente profesor!");
+            else if (nota >= 3.0) mostrarAnimacion("moderate", "Buen desempeño general.");
+            else mostrarAnimacion("improvement", "Tiene oportunidades de mejora.");
+          }
+
+          return `
+            <tr>
+              <td>${detalle.Nota}</td>
+              <td>${detalle.Reseña || 'Sin reseña'}</td>
+              <td>${detalle.Ano || 'No disponible'}</td>
+            </tr>`;
+        }).join('');
+      } catch (err) {
+        resultado.textContent = "Error al consultar.";
+        tablaBody.innerHTML = "";
+        console.error(err);
+      }
+    });
+
+    fetchDocentes();
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const authControlsDiv = document.getElementById('auth-controls');
+        const navItemsAuthRequired = document.querySelectorAll('#main-navigation .auth-required');
+
+        if (!authControlsDiv || !navItemsAuthRequired) {
+            console.error("Error: Elementos #auth-controls o .auth-required no encontrados en el DOM de esta página.");
+            return; 
+        }
+
+        try {
+            const response = await fetch('/auth/status'); 
+            if (!response.ok) {
+                console.error('Error al verificar estado de sesión con /auth/status:', response.statusText);
+                renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+                return;
+            }
+            const data = await response.json();
+
+            if (data.isLoggedIn && data.usuario && data.usuario.nombreUsuario) { // Verificar que data.usuario.nombreUsuario exista
+                renderLoggedInStateUI(data.usuario, navItemsAuthRequired, authControlsDiv);
+            } else {
+                renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+            }
+        } catch (error) {
+            console.error('Error crítico al verificar el estado de autenticación:', error);
+            renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv);
+        }
+    });
+
+    function renderLoggedInStateUI(usuario, navItemsAuthRequired, authControlsDiv) {
+        navItemsAuthRequired.forEach(item => item.classList.remove('hidden'));
+
+        // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+        authControlsDiv.innerHTML = `
+            <span id="auth-status-message">Bienvenido, ${usuario.nombreUsuario}!</span>
+            <button id="logout-button-nav">Cerrar Sesión</button>
+        `;
+        
+        const logoutButton = document.getElementById('logout-button-nav');
+        if(logoutButton) { 
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/auth/logout');
+                    window.location.href = '/login.html'; 
+                } catch (err) {
+                    console.error('Error al cerrar sesión:', err);
+                    alert('No se pudo cerrar sesión.');
+                }
+            });
+        } else {
+            console.error("Botón de logout no encontrado después de renderizar.");
+        }
+    }
+
+    function renderLoggedOutStateUI(navItemsAuthRequired, authControlsDiv) {
+        navItemsAuthRequired.forEach(item => item.classList.add('hidden'));
+
+        // El HTML se genera aquí. Los estilos deben venir de /css/style.css
+        let authHTML = '<a href="/login.html" id="login-button-nav">Iniciar Sesión</a>';
+        authHTML += '<a href="/registro.html" id="register-button-nav">Registrarse</a>';
+        authControlsDiv.innerHTML = authHTML;
+    }
+  </script>
+  
+</body>
+</html>
