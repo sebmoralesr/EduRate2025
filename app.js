@@ -17,6 +17,9 @@ const Valoracion = require('./FinalBase/models/Valoracion');
 const Usuario = require('./FinalBase/models/Usuario'); // << IMPORTANTE: Modelo de Usuario
 
 const app = express();
+
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 // Es una buena práctica usar variables de entorno para la URI de MongoDB y el secreto de sesión
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Migracion';
@@ -28,6 +31,24 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
 
 // --- Middlewares ---
+
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: MONGODB_URI,
+        collectionName: 'app_sessions',
+        ttl: 14 * 24 * 60 * 60
+    }),
+    cookie: {
+        maxAge: 14 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Esto requiere HTTPS o un proxy confiable
+        sameSite: 'lax'
+    }
+}));
+
 // Servir archivos estáticos (CSS, JS del cliente, imágenes) desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 // Parsear cuerpos de petición JSON

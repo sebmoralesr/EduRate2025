@@ -1,7 +1,9 @@
 // FinalBase/routes/auth.js
 const express = require('express');
 const router = express.Router();
-const Usuario = require('../models/Usuario'); // Ajusta la ruta si es necesario (../models/Usuario.js)
+// Asegúrate de que la ruta a tu modelo Usuario sea correcta desde ESTE archivo
+// Si auth.js está en 'FinalBase/routes/' y Usuario.js en 'FinalBase/models/', entonces '../models/Usuario' es correcto.
+const Usuario = require('../models/Usuario'); 
 const bcrypt = require('bcryptjs');
 
 // POST /auth/register - Ruta de Registro de Nuevos Usuarios
@@ -43,8 +45,12 @@ router.post('/register', async (req, res) => {
         console.error("Error en POST /auth/register:", error);
         // Manejo de errores de validación de Mongoose
         if (error.name === 'ValidationError') {
-            const mensajes = Object.values(error.errors).map(val => val.message);
-            return res.status(400).json({ message: mensajes.join(' ') });
+            // Construir un mensaje de error más amigable a partir de los errores de validación
+            let errors = {};
+            for (let field in error.errors) {
+                errors[field] = error.errors[field].message;
+            }
+            return res.status(400).json({ message: "Error de validación.", errors });
         }
         // Error genérico del servidor
         res.status(500).json({ message: 'Error en el servidor al registrar el usuario. Inténtalo más tarde.' });
@@ -63,7 +69,6 @@ router.post('/login', async (req, res) => {
         // Buscar al usuario por email (guardado en minúsculas)
         const usuario = await Usuario.findOne({ email: email.toLowerCase() });
         if (!usuario) {
-            // Mensaje genérico para no revelar si el email existe o no
             return res.status(401).json({ message: 'Credenciales inválidas.' }); 
         }
 
@@ -74,23 +79,20 @@ router.post('/login', async (req, res) => {
         }
 
         // Si las credenciales son correctas, establecer la sesión
-        req.session.usuarioId = usuario._id; // Guardar el ID del usuario en la sesión
-        req.session.nombreUsuario = usuario.nombreUsuario; // Guardar el nombre de usuario (opcional, útil para UI)
-        
-        // Es buena práctica guardar la sesión explícitamente antes de enviar la respuesta
+        req.session.usuarioId = usuario._id; 
+        req.session.nombreUsuario = usuario.nombreUsuario; 
         req.session.save(err => {
             if (err) {
                 console.error("Error al guardar sesión en login:", err);
                 return res.status(500).json({ message: 'Error al iniciar sesión. Inténtalo más tarde.' });
             }
-            // Respuesta exitosa
             res.status(200).json({ 
                 message: 'Login exitoso. Redirigiendo...',
-                redirectTo: '/', // Página a la que redirigir tras el login
-                usuario: { // Enviar información básica del usuario al cliente (opcional)
+                redirectTo: '/', 
+                usuario: { 
                     id: usuario._id,
                     nombreUsuario: usuario.nombreUsuario,
-                    email: usuario.email
+                    email: usuario.email // Opcional: no enviar email si no es necesario en el frontend tras login
                 }
             });
         });
@@ -103,35 +105,37 @@ router.post('/login', async (req, res) => {
 
 // GET /auth/logout - Ruta de Cierre de Sesión
 router.get('/logout', (req, res) => {
-    req.session.destroy((err) => { // Destruir la sesión
+    req.session.destroy((err) => { 
         if (err) {
             console.error("Error al destruir la sesión:", err);
-            // Aunque haya un error, intentamos limpiar la cookie y redirigir
-            res.clearCookie('connect.sid'); // Nombre por defecto de la cookie de sesión de express-session
-            return res.status(500).json({ message: 'No se pudo cerrar sesión completamente, pero se intentó.', redirectTo: '/login.html' });
+            res.clearCookie('connect.sid'); // Intenta limpiar la cookie de todas formas
+            // Podrías enviar un error, pero para el logout, a veces es mejor solo redirigir.
+            return res.status(500).json({ message: 'No se pudo cerrar sesión completamente.', redirectTo: '/login.html' });
         }
-        res.clearCookie('connect.sid');
-        // No enviar JSON aquí si el cliente espera una redirección o maneja el logout
-        // Si el cliente hace un fetch, sí enviar JSON.
-        // Para un simple enlace <a> que lleva a /auth/logout, una redirección es mejor.
-        // res.status(200).json({ message: 'Logout exitoso.', redirectTo: '/login.html' });
-        res.redirect('/login.html'); // Redirigir al login tras cerrar sesión
+        res.clearCookie('connect.sid'); // Nombre por defecto de la cookie de express-session
+        // Para el script del frontend que espera JSON, esta respuesta es mejor:
+        res.status(200).json({ message: 'Logout exitoso.', redirectTo: '/login.html' });
+        // Si fuera un logout por un simple enlace <a> y no fetch(), una redirección directa sería:
+        // res.redirect('/login.html');
     });
 });
 
 
-// GET /auth/status - Ruta para verificar el estado de la sesión (opcional, útil para el frontend)
+// GET /auth/status - Ruta para verificar el estado de la sesión
 router.get('/status', (req, res) => {
-    if (req.session.usuarioId) {
+    // Asegúrate de que req.session.usuarioId y req.session.nombreUsuario se establezcan correctamente durante el login
+    if (req.session.usuarioId && req.session.nombreUsuario) {
         res.status(200).json({
             isLoggedIn: true,
             usuario: {
                 id: req.session.usuarioId,
                 nombreUsuario: req.session.nombreUsuario
-                // No enviar el email aquí a menos que sea estrictamente necesario
+                // Considera qué información del usuario es seguro y necesario enviar al frontend aquí
             }
         });
     } else {
+        // Es importante enviar un estado 200 OK incluso si no está logueado,
+        // para que el fetch del frontend no lo trate como un error de red.
         res.status(200).json({ isLoggedIn: false });
     }
 });
